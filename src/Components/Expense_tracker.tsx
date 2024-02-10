@@ -1,14 +1,15 @@
 import { FieldValue, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { catagories } from "../App";
 
 const Expense_tracker = () => {
   const schema = z.object({
-    desc: z.string().min(3),
+    descripiton: z.string().min(3),
     amount: z
       .number({ invalid_type_error: "Age field is required" })
       .positive("Amount must be positive"),
-    catagory: z.enum(["Grocories", "Utilites", "Entertainment"]).optional(),
+    catagory: z.enum(["Grocories", "Utilities", "Entertainment"]).optional(),
   });
 
   type FormData = z.infer<typeof schema>;
@@ -25,16 +26,16 @@ const Expense_tracker = () => {
   return (
     <form action="" onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-3 flex flex-col">
-        <label className="mx-2 font-bold" htmlFor="desc">
+        <label className="mx-2 font-bold" htmlFor="descripiton">
           Descripiton
         </label>
         <input
-          {...register("desc")}
+          {...register("descripiton")}
           className="border-2 border-black w-72 h-10 px-2"
-          id="desc"
+          id="descripiton"
           type="text"
         />
-        {errors.desc && <p className="text-red-600">{errors.desc.message}</p>}
+        {errors.descripiton && <p className="text-red-600">{errors.descripiton.message}</p>}
       </div>
       <div className="mb-3 flex flex-col">
         <label className="mx-2 font-bold" htmlFor="amount">
@@ -64,9 +65,12 @@ const Expense_tracker = () => {
           <p className="text-red-600">{errors.catagory.message}</p>
         )}
         <datalist id="categories">
-          <option value="Grocories"></option>
-          <option value="Utilites"></option>
-          <option value="Entertainment"></option>
+          <option value=""></option>
+          {catagories.map((catagory) => (
+        <option key={catagory} value={catagory}>
+          {catagory}
+        </option>)
+        )}
         </datalist>
         <button
           disabled={!isValid}
