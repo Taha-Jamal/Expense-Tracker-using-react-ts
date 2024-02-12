@@ -2,22 +2,25 @@ import { FieldValue, FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { catagories } from "../App";
+import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES } from "react";
 
 interface Props {
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: z.infer<typeof schema>) => void;
 }
 
-const Expense_tracker = ({ onSubmit }: Props) => {
-  const schema = z.object({
-    descripiton: z.string().min(3),
-    amount: z
-      .number({ invalid_type_error: "Age field is required" })
-      .positive("Amount must be positive"),
-    catagory: z.enum(catagories, {
-      errorMap: () => ({ message: "Catagory is missing" }),
-    }),
-  });
 
+const schema = z.object({
+  description: z.string().min(3),
+  amount: z.number({ invalid_type_error: "Age field is required" })
+    .positive("Amount must be positive"),
+  catagory: z.enum(catagories, {
+    errorMap: () => ({ message: "Catagory is missing" }),
+  }),
+});
+
+const Expense_tracker = ({ onSubmit }: Props) => {
+
+  
   type FormData = z.infer<typeof schema>;
 
   const {
@@ -29,23 +32,23 @@ const Expense_tracker = ({ onSubmit }: Props) => {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => {
-        onSubmit(data);
+      onSubmit={handleSubmit(data => {
+        onSubmit(data)
         reset();
       })}
     >
       <div className="mb-3 flex flex-col">
-        <label className="mx-2 font-bold" htmlFor="descripiton">
+        <label className="mx-2 font-bold" htmlFor="description">
           Descripiton
         </label>
         <input
-          {...register("descripiton")}
+          {...register("description")}
           className="border-2 border-black w-72 h-10 px-2"
-          id="descripiton"
+          id="description"
           type="text"
         />
-        {errors.descripiton && (
-          <p className="text-red-600">{errors.descripiton.message}</p>
+        {errors.description && (
+          <p className="text-red-600">{errors.description.message}</p>
         )}
       </div>
       <div className="mb-3 flex flex-col">
