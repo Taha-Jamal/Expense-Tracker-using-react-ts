@@ -3,28 +3,37 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { catagories } from "../App";
 
-const Expense_tracker = () => {
+interface Props {
+  onSubmit: (data: FormData) => void;
+}
+
+const Expense_tracker = ({ onSubmit }: Props) => {
   const schema = z.object({
     descripiton: z.string().min(3),
     amount: z
       .number({ invalid_type_error: "Age field is required" })
       .positive("Amount must be positive"),
-    catagory: z.enum(["Grocories", "Utilities", "Entertainment"]).optional(),
+    catagory: z.enum(catagories, {
+      errorMap: () => ({ message: "Catagory is missing" }),
+    }),
   });
 
   type FormData = z.infer<typeof schema>;
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = (data: FieldValues) => {
-    console.log(data);
-  };
-
   return (
-    <form action="" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit((data) => {
+        onSubmit(data);
+        reset();
+      })}
+    >
       <div className="mb-3 flex flex-col">
         <label className="mx-2 font-bold" htmlFor="descripiton">
           Descripiton
@@ -35,7 +44,9 @@ const Expense_tracker = () => {
           id="descripiton"
           type="text"
         />
-        {errors.descripiton && <p className="text-red-600">{errors.descripiton.message}</p>}
+        {errors.descripiton && (
+          <p className="text-red-600">{errors.descripiton.message}</p>
+        )}
       </div>
       <div className="mb-3 flex flex-col">
         <label className="mx-2 font-bold" htmlFor="amount">
@@ -67,13 +78,13 @@ const Expense_tracker = () => {
         <datalist id="categories">
           <option value=""></option>
           {catagories.map((catagory) => (
-        <option key={catagory} value={catagory}>
-          {catagory}
-        </option>)
-        )}
+            <option key={catagory} value={catagory}>
+              {catagory}
+            </option>
+          ))}
         </datalist>
         <button
-          disabled={!isValid}
+          // disabled={!isValid}
           className="mt-3 h-10 w-20 mx-2 text-white rounded-lg bg-blue-500"
           type="submit"
         >

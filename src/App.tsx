@@ -3,7 +3,7 @@ import ExpenseList from "./Components/ExpenseList";
 import Expense_tracker from "./Components/Expense_tracker";
 import ExpenseFilter from "./Components/ExpenseFilter";
 
-export const catagories = ['Gorocories', 'Utilities', 'Entertainment']
+export const catagories = ["Gorocories", "Utilities", "Entertainment"] as const;
 
 function App() {
   const [selectedCatagory, setCatagory] = useState("");
@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div>
-      <Expense_tracker />
+      <Expense_tracker onSubmit={expense => setExpenses([...expenses,{...expense, id:expenses.length + 1}])} />
       <ExpenseFilter onSelectCatagory={(catagory) => setCatagory(catagory)} />
       <ExpenseList
         expenses={visibleExpenses}
